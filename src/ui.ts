@@ -1,8 +1,11 @@
-import type { GameState, Suit, Card } from './types'
+import type { GameState, Suit, Card, User, Bet } from './types'
 import { newGame, stepDraw } from './game'
+import { api } from './api'
 
 let state: GameState | null = null
 let lastDrawn: Card | null = null
+let currentUser: User | null = null
+let bets: Bet[] = []
 
 const suitEmoji: Record<Suit, string> = {
     oros: '🪙',
@@ -22,11 +25,109 @@ function pct(pos: number) {
     return Math.round((Math.max(0, Math.min(7, pos)) / 7) * 100)
 }
 
+function renderAuth(container: HTMLElement) {
+    const card = el('div', 'card')
+    const hd = el('div', 'card-hd')
+    const h2 = el('h2')
+    h2.textContent = 'Bienvenido a Carrera de Caballos'
+    hd.appendChild(h2)
+
+    const bd = el('div', 'card-bd')
+
+    // Login form
+    const loginForm = el('div', 'auth-form')
+    const loginTitle = el('h3')
+    loginTitle.textContent = 'Iniciar Sesión'
+    loginForm.appendChild(loginTitle)
+
+    const loginUsername = el('input') as HTMLInputElement
+    loginUsername.type = 'text'
+    loginUsername.placeholder = 'Usuario'
+    loginUsername.className = 'auth-input'
+
+    const loginPassword = el('input') as HTMLInputElement
+    loginPassword.type = 'password'
+    loginPassword.placeholder = 'Contraseña'
+    loginPassword.className = 'auth-input'
+
+    const loginBtn = el('button', 'btn-primary')
+    loginBtn.textContent = 'Iniciar Sesión'
+    loginBtn.onclick = async () => {
+        try {
+            const response = await api.login(loginUsername.value, loginPassword.value)
+            currentUser = response.user
+            render(document.querySelector('#app')!)
+        } catch (err: any) {
+            alert(err.message)
+        }
+    }
+
+    loginForm.append(loginUsername, loginPassword, loginBtn)
+
+    // Register form
+    const registerForm = el('div', 'auth-form')
+    const registerTitle = el('h3')
+    registerTitle.textContent = 'Registrarse'
+    registerForm.appendChild(registerTitle)
+
+    const registerUsername = el('input') as HTMLInputElement
+    registerUsername.type = 'text'
+    registerUsername.placeholder = 'Usuario'
+    registerUsername.className = 'auth-input'
+
+    const registerPassword = el('input') as HTMLInputElement
+    registerPassword.type = 'password'
+    registerPassword.placeholder = 'Contraseña'
+    registerPassword.className = 'auth-input'
+
+    const registerBtn = el('button', 'btn-secondary')
+    registerBtn.textContent = 'Registrarse'
+    registerBtn.onclick = async () => {
+        try {
+            const response = await api.register(registerUsername.value, registerPassword.value)
+            currentUser = response.user
+            render(document.querySelector('#app')!)
+        } catch (err: any) {
+            alert(err.message)
+        }
+    }
+
+    registerForm.append(registerUsername, registerPassword, registerBtn)
+
+    bd.append(loginForm, el('div', 'divider'), registerForm)
+    card.append(hd, bd)
+    container.appendChild(card)
+}
+
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+function logout() {
+    api.logout()
+    currentUser = null
+    state = null
+    bets = []
+    render(document.querySelector('#app')!)
+}
+
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+function removeBet(index: number) {
+    if (currentUser && bets[index]) {
+        currentUser.points += bets[index].amount
+        bets.splice(index, 1)
+        render(document.querySelector('#app')!)
+    }
+}
+
 function render(app: HTMLElement) {
     app.innerHTML = ''
 
     const container = el('div', 'container')
     app.appendChild(container)
+
+    // Check if user is logged in
+    if (!currentUser) {
+        renderAuth(container)
+        return
+    }
 
     // HEADER
     const header = el('div', 'header')
@@ -38,6 +139,14 @@ function render(app: HTMLElement) {
     p.textContent =
         'Juego automatizado paso a paso: modelo de datos, estructuras, operadores y restricciones.'
     titleBox.append(h1, p)
+
+    const userInfo = el('div', 'user-info')
+    userInfo.innerHTML = `
+        <div class="user-name">${currentUser.username}</div>
+        <div class="user-points">${currentUser.points} puntos</div>
+        <button class="btn-logout" onclick="logout()">Logout</button>
+    `
+    titleBox.appendChild(userInfo)
 
     const pills = el('div', 'pills')
     const pill2 = el('div', 'pill')
@@ -54,35 +163,117 @@ function render(app: HTMLElement) {
         const card = el('div', 'card')
         const hd = el('div', 'card-hd')
         const h2 = el('h2')
-        h2.textContent = 'Configuración'
+        h2.textContent = 'Configuración de Apuesta'
         hd.appendChild(h2)
 
         const bd = el('div', 'card-bd')
 
+        // Buy points section
+        const buySection = el('div', 'buy-section')
+        const buyTitle = el('h3')
+        buyTitle.textContent = 'Comprar Puntos'
+        buySection.appendChild(buyTitle)
+
+        const buyBtn = el('button', 'btn-secondary')
+        buyBtn.textContent = 'Comprar 1000 puntos (10,000 pesos)'
+        buyBtn.onclick = async () => {
+            try {
+                await api.buyPoints(1000)
+                const userResponse = await api.getUser()
+                currentUser = userResponse.user
+                render(app)
+            } catch (err: any) {
+                alert(err.message)
+            }
+        }
+        buySection.appendChild(buyBtn)
+
+        // Betting section
+        const betSection = el('div', 'bet-section')
+        const betTitle = el('h3')
+        betTitle.textContent = 'Hacer Apuesta'
+        betSection.appendChild(betTitle)
+
+        const betForm = el('div', 'bet-form')
+        const horseSelect = el('select') as HTMLSelectElement
+        horseSelect.className = 'bet-select'
+        const horses = ['oros', 'copas', 'espadas', 'bastos']
+        horses.forEach(horse => {
+            const opt = el('option') as HTMLOptionElement
+            opt.value = horse
+            opt.textContent = horse.charAt(0).toUpperCase() + horse.slice(1)
+            horseSelect.appendChild(opt)
+        })
+
+        const amountInput = el('input') as HTMLInputElement
+        amountInput.type = 'number'
+        amountInput.placeholder = 'Cantidad'
+        amountInput.className = 'bet-input'
+        amountInput.min = '1'
+        amountInput.max = String(currentUser.points)
+
+        const addBetBtn = el('button', 'btn-secondary')
+        addBetBtn.textContent = 'Agregar Apuesta'
+        addBetBtn.onclick = () => {
+            const horse = horseSelect.value as Suit
+            const amount = Number(amountInput.value)
+            if (amount > 0 && amount <= currentUser!.points) {
+                bets.push({ horse, amount })
+                currentUser!.points -= amount
+                amountInput.value = ''
+                render(app)
+            } else {
+                alert('Cantidad inválida')
+            }
+        }
+
+        betForm.append(horseSelect, amountInput, addBetBtn)
+        betSection.appendChild(betForm)
+
+        // Current bets
+        if (bets.length > 0) {
+            const betsList = el('div', 'bets-list')
+            const betsTitle = el('h4')
+            betsTitle.textContent = 'Apuestas Actuales'
+            betsList.appendChild(betsTitle)
+
+            bets.forEach((bet, index) => {
+                const betItem = el('div', 'bet-item')
+                betItem.innerHTML = `
+                    <span>${bet.horse}: ${bet.amount} puntos</span>
+                    <button class="btn-remove" onclick="removeBet(${index})">X</button>
+                `
+                betsList.appendChild(betItem)
+            })
+            betSection.appendChild(betsList)
+        }
+
+        // Start game section
         const controls = el('div', 'controls')
         const label = el('div', 'small')
-        label.textContent = 'Selecciona la cantidad de jugadores y comienza la carrera.'
+        label.textContent = 'Selecciona la cantidad de caballos y comienza la carrera.'
 
         const select = el('select') as HTMLSelectElement
         ;[2, 3, 4].forEach((n) => {
             const opt = el('option') as HTMLOptionElement
             opt.value = String(n)
-            opt.textContent = `${n} jugadores`
+            opt.textContent = `${n} caballos`
             select.appendChild(opt)
         })
-        select.value = '2'
+        select.value = '4'
 
         const btn = el('button', 'btn-primary')
-        btn.textContent = 'Iniciar partida'
+        btn.textContent = 'Iniciar Carrera'
+        btn.disabled = bets.length === 0
         btn.onclick = () => {
             state = newGame(Number(select.value))
             lastDrawn = null
             render(app)
         }
 
-        controls.append(select, btn)
-        bd.append(label, el('div', 'divider'), controls)
+        controls.append(label, select, btn)
 
+        bd.append(buySection, el('div', 'divider'), betSection, el('div', 'divider'), controls)
         card.append(hd, bd)
         container.appendChild(card)
         return
@@ -218,6 +409,19 @@ function render(app: HTMLElement) {
         try {
             const { drawn } = stepDraw(state!)
             lastDrawn = drawn
+
+            // Check if game finished
+            if (state!.status === 'finished' && state!.places.length > 0) {
+                const winner = state!.places[0] // First place
+                const winningBet = bets.find(bet => bet.horse === winner)
+                if (winningBet && currentUser) {
+                    const winnings = winningBet.amount * 5
+                    currentUser.points += winnings
+                    alert(`¡Ganaste! ${winner} ganó. Recibes ${winnings} puntos.`)
+                } else {
+                    alert(`${state!.places[0]} ganó. Mejor suerte la próxima vez.`)
+                }
+            }
         } catch (e) {
             alert(e instanceof Error ? e.message : String(e))
         }
@@ -227,8 +431,15 @@ function render(app: HTMLElement) {
     const btnReset = el('button', 'btn-danger')
     btnReset.textContent = 'Reiniciar'
     btnReset.onclick = () => {
+        // Return bet points
+        if (currentUser) {
+            bets.forEach(bet => {
+                currentUser!.points += bet.amount
+            })
+        }
         state = null
         lastDrawn = null
+        bets = []
         render(app)
     }
 
@@ -339,8 +550,20 @@ function render(app: HTMLElement) {
     side.appendChild(history)
 }
 
-export function initUI() {
+export async function initUI() {
     const app = document.querySelector<HTMLDivElement>('#app')
     if (!app) throw new Error('No existe #app')
+
+    // Check if user is logged in
+    if (api.isLoggedIn()) {
+        try {
+            const response = await api.getUser()
+            currentUser = response.user
+        } catch (err) {
+            // Token invalid, logout
+            api.logout()
+        }
+    }
+
     render(app)
 }

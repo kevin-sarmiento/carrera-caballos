@@ -32,3 +32,14 @@ export interface GameState {
     history: string[]
     places: Suit[] // orden de llegada (1º,2º,3º,4º)
 }
+
+export interface User {
+    id: number
+    username: string
+    points: number
+}
+
+export interface Bet {
+    horse: Suit
+    amount: number
+}
