@@ -446,120 +446,124 @@ button:disabled { opacity: 0.45; cursor: not-allowed; }
 }
 .checkpoint-card-mini .checkpoint-back {
   border: 1px solid rgba(255,255,255,0.18);
-}/ *   A u t h   U I   * / 
- . a u t h - f o r m   { 
-     m a r g i n - b o t t o m :   1 6 p x ; 
- } 
- 
- . a u t h - f o r m   h 3   { 
-     m a r g i n :   0   0   1 2 p x   0 ; 
-     f o n t - s i z e :   1 6 p x ; 
- } 
- 
- . a u t h - i n p u t   { 
-     d i s p l a y :   b l o c k ; 
-     w i d t h :   1 0 0 % ; 
-     p a d d i n g :   8 p x   1 2 p x ; 
-     m a r g i n - b o t t o m :   8 p x ; 
-     b o r d e r :   1 p x   s o l i d   v a r ( - - l i n e ) ; 
-     b o r d e r - r a d i u s :   v a r ( - - r a d i u s 2 ) ; 
-     b a c k g r o u n d :   v a r ( - - p a n e l ) ; 
-     c o l o r :   v a r ( - - t e x t ) ; 
-     f o n t - s i z e :   1 4 p x ; 
- } 
- 
- . a u t h - i n p u t : f o c u s   { 
-     o u t l i n e :   n o n e ; 
-     b o r d e r - c o l o r :   r g b a ( 0 ,   1 9 0 ,   2 5 5 ,   0 . 5 ) ; 
- } 
- 
- / *   U s e r   I n f o   * / 
- . u s e r - i n f o   { 
-     d i s p l a y :   f l e x ; 
-     a l i g n - i t e m s :   c e n t e r ; 
-     g a p :   1 2 p x ; 
-     m a r g i n - t o p :   8 p x ; 
- } 
- 
- . u s e r - n a m e   { 
-     f o n t - w e i g h t :   b o l d ; 
- } 
- 
- . u s e r - p o i n t s   { 
-     c o l o r :   # f f d 7 0 0 ; 
- } 
- 
- . b t n - l o g o u t   { 
-     p a d d i n g :   4 p x   8 p x ; 
-     b o r d e r :   1 p x   s o l i d   v a r ( - - l i n e ) ; 
-     b o r d e r - r a d i u s :   v a r ( - - r a d i u s 2 ) ; 
-     b a c k g r o u n d :   v a r ( - - p a n e l ) ; 
-     c o l o r :   v a r ( - - t e x t ) ; 
-     c u r s o r :   p o i n t e r ; 
-     f o n t - s i z e :   1 2 p x ; 
- } 
- 
- . b t n - l o g o u t : h o v e r   { 
-     b a c k g r o u n d :   v a r ( - - p a n e l 2 ) ; 
- } 
- 
- / *   B e t t i n g   U I   * / 
- . b u y - s e c t i o n ,   . b e t - s e c t i o n   { 
-     m a r g i n - b o t t o m :   1 6 p x ; 
- } 
- 
- . b u y - s e c t i o n   h 3 ,   . b e t - s e c t i o n   h 3   { 
-     m a r g i n :   0   0   1 2 p x   0 ; 
-     f o n t - s i z e :   1 6 p x ; 
- } 
- 
- . b e t - f o r m   { 
-     d i s p l a y :   f l e x ; 
-     g a p :   8 p x ; 
-     a l i g n - i t e m s :   c e n t e r ; 
-     m a r g i n - b o t t o m :   1 2 p x ; 
- } 
- 
- . b e t - s e l e c t ,   . b e t - i n p u t   { 
-     p a d d i n g :   6 p x   8 p x ; 
-     b o r d e r :   1 p x   s o l i d   v a r ( - - l i n e ) ; 
-     b o r d e r - r a d i u s :   v a r ( - - r a d i u s 2 ) ; 
-     b a c k g r o u n d :   v a r ( - - p a n e l ) ; 
-     c o l o r :   v a r ( - - t e x t ) ; 
-     f o n t - s i z e :   1 4 p x ; 
- } 
- 
- . b e t - i n p u t   { 
-     w i d t h :   8 0 p x ; 
- } 
- 
- . b e t s - l i s t   h 4   { 
-     m a r g i n :   1 2 p x   0   8 p x   0 ; 
-     f o n t - s i z e :   1 4 p x ; 
- } 
- 
- . b e t - i t e m   { 
-     d i s p l a y :   f l e x ; 
-     j u s t i f y - c o n t e n t :   s p a c e - b e t w e e n ; 
-     a l i g n - i t e m s :   c e n t e r ; 
-     p a d d i n g :   6 p x   8 p x ; 
-     m a r g i n - b o t t o m :   4 p x ; 
-     b a c k g r o u n d :   v a r ( - - p a n e l ) ; 
-     b o r d e r - r a d i u s :   v a r ( - - r a d i u s 2 ) ; 
-     f o n t - s i z e :   1 4 p x ; 
- } 
- 
- . b t n - r e m o v e   { 
-     p a d d i n g :   2 p x   6 p x ; 
-     b o r d e r :   n o n e ; 
-     b o r d e r - r a d i u s :   4 p x ; 
-     b a c k g r o u n d :   # f f 4 7 5 7 ; 
-     c o l o r :   w h i t e ; 
-     c u r s o r :   p o i n t e r ; 
-     f o n t - s i z e :   1 2 p x ; 
- } 
- 
- . b t n - r e m o v e : h o v e r   { 
-     b a c k g r o u n d :   # f f 3 7 4 2 ; 
- }  
- 
+}
+
+/* Auth UI */
+.auth-form {
+  margin-bottom: 16px;
+}
+
+.auth-form h3 {
+  margin: 0 0 12px 0;
+  font-size: 16px;
+}
+
+.auth-input {
+  display: block;
+  width: 100%;
+  padding: 8px 12px;
+  margin-bottom: 8px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius2);
+  background: var(--panel);
+  color: var(--text);
+  font-size: 14px;
+}
+
+.auth-input:focus {
+  outline: none;
+  border-color: rgba(0, 190, 255, 0.5);
+}
+
+/* User Info */
+.user-info {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-top: 8px;
+}
+
+.user-name {
+  font-weight: bold;
+}
+
+.user-points {
+  color: #ffd700;
+}
+
+.btn-logout {
+  padding: 4px 8px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius2);
+  background: var(--panel);
+  color: var(--text);
+  cursor: pointer;
+  font-size: 12px;
+}
+
+.btn-logout:hover {
+  background: var(--panel2);
+}
+
+/* Betting UI */
+.buy-section,
+.bet-section {
+  margin-bottom: 16px;
+}
+
+.buy-section h3,
+.bet-section h3 {
+  margin: 0 0 12px 0;
+  font-size: 16px;
+}
+
+.bet-form {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  margin-bottom: 12px;
+}
+
+.bet-select,
+.bet-input {
+  padding: 6px 8px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius2);
+  background: var(--panel);
+  color: var(--text);
+  font-size: 14px;
+}
+
+.bet-input {
+  width: 80px;
+}
+
+.bets-list h4 {
+  margin: 12px 0 8px 0;
+  font-size: 14px;
+}
+
+.bet-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 6px 8px;
+  margin-bottom: 4px;
+  background: var(--panel);
+  border-radius: var(--radius2);
+  font-size: 14px;
+}
+
+.btn-remove {
+  padding: 2px 6px;
+  border: none;
+  border-radius: 4px;
+  background: #ff4757;
+  color: white;
+  cursor: pointer;
+  font-size: 12px;
+}
+
+.btn-remove:hover {
+  background: #ff3742;
+}
